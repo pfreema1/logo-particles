@@ -6,10 +6,11 @@ import particlesFrag from '../shaders/particles.frag';
 import glslify from 'glslify';
 
 export default class FBO {
-  constructor(renderer, bgScene) {
+  constructor(renderer, bgScene, webGLView) {
     this.renderer = renderer;
     this.bgScene = bgScene;
     this.time = null;
+    this.webGLView = webGLView;
 
     this.init();
   }
@@ -75,6 +76,9 @@ export default class FBO {
     if (!this.simMaterial) {
       return;
     }
+
+    this.simMaterial.uniforms.uMouse.value = this.webGLView.mouse;
+
     // pass the updated positional values to the simulation
     // this.simMaterial.uniforms.posTex.value = this.renderTargetA.texture;
     this.simMaterial.uniforms.uTime.value = this.time;
@@ -98,7 +102,9 @@ export default class FBO {
       this.particlesMaterial
     );
 
-    this.particlesMesh.position.set(-0.5, -0.5, 0.0);
+    // this.particlesMesh.add(new THREE.AxesHelper());
+    this.particlesMesh.rotation.z += Math.PI * 0.5;
+    // this.particlesMesh.rotation.x -= Math.PI;
     this.bgScene.add(this.particlesMesh);
   }
 
@@ -186,6 +192,9 @@ export default class FBO {
         logoTex: {
           type: 't',
           value: this.logoTexture
+        },
+        uMouse: {
+          value: this.webGLView.mouse
         }
       },
       vertexShader: glslify(simulationVert),
@@ -215,7 +224,7 @@ export default class FBO {
     for (let x = 0; x < this.w; x++) {
       for (let y = 0; y < this.h; y++) {
         this.data[i++] = (x / this.w) * 2.0;
-        this.data[i++] = y / this.h;
+        this.data[i++] = (y / this.h) * 1.2;
         this.data[i++] = 0;
       }
     }

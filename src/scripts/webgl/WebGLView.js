@@ -29,8 +29,9 @@ export default class WebGLView {
   async init() {
     this.initThree();
     this.initBgScene();
+    this.initLookAtTarget();
     this.initLights();
-    this.initTweakPane();
+    // this.initTweakPane();
     // await this.loadTestMesh();
     // this.setupTextCanvas();
     this.initMouseMoveListen();
@@ -41,8 +42,18 @@ export default class WebGLView {
     this.initResizeHandler();
   }
 
+  initLookAtTarget() {
+    var geometry = new THREE.BoxGeometry(0.15, 0.15, 0.15);
+    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    this.lookAtCube = new THREE.Mesh(geometry, material);
+    this.lookAtCube.add(new THREE.AxesHelper());
+    this.lookAtCube.position.set(-0.5, 1, 0);
+    this.lookAtCube.visible = false;
+    this.bgScene.add(this.lookAtCube);
+  }
+
   initFBO() {
-    this.FBO = new FBO(this.renderer, this.bgScene);
+    this.FBO = new FBO(this.renderer, this.bgScene, this);
   }
 
   initResizeHandler() {
@@ -126,8 +137,13 @@ export default class WebGLView {
     this.height = window.innerHeight;
 
     window.addEventListener('mousemove', ({ clientX, clientY }) => {
-      this.mouse.x = (clientX / this.width) * 2 - 1;
-      this.mouse.y = -(clientY / this.height) * 2 + 1;
+      // this.mouse.x = (clientX / this.width) * 2 - 1;
+      // this.mouse.y = -(clientY / this.height) * 2 + 1;
+
+      TweenMax.to(this.mouse, 0.5, {
+        x: (clientX / this.width) * 2 - 1,
+        y: -(clientY / this.height) * 2 + 1
+      });
 
       // this.mouseCanvas.addTouch(this.mouse);
     });
@@ -206,8 +222,11 @@ export default class WebGLView {
       100
     );
     this.controls = new OrbitControls(this.bgCamera, this.renderer.domElement);
+    this.controls.autoRotate = true;
 
-    this.bgCamera.position.z = 1;
+    this.bgCamera.position.z = -1;
+    this.bgCamera.position.y += 1;
+    this.bgCamera.position.x = -2;
     this.controls.update();
 
     this.bgScene = new THREE.Scene();
@@ -252,6 +271,10 @@ export default class WebGLView {
     const time = performance.now() * 0.0005;
 
     this.controls.update();
+
+    if (this.lookAtCube) {
+      this.bgCamera.lookAt(this.lookAtCube.position);
+    }
 
     if (this.renderTri) {
       this.renderTri.triMaterial.uniforms.uTime.value = time;

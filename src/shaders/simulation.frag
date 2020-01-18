@@ -3,6 +3,7 @@ precision mediump float;
 uniform sampler2D posTex;
 uniform sampler2D logoTex;
 uniform float uTime;
+uniform vec2 uMouse;
 
 varying vec2 vUv;
 
@@ -55,7 +56,7 @@ void main() {
     vec3 pos = texture2D(posTex, vUv).xyz;
     vec3 logoCol = texture2D(logoTex, vUv).rgb;
 
-    float fbmVal = fbm(vec2(vUv.x, vUv.y + uTime * 0.1) * 8.0) * 0.3;
+    float fbmVal = fbm(vec2(vUv.x, vUv.y + uTime * 0.1) * 8.0) * uMouse.x;
 
 
     pos.z = fbmVal - logoCol.r;
