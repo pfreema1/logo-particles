@@ -13,7 +13,7 @@ export default class FBO {
 
     this.setInitialPositions();
     this.feedPositionsIntoDataTexture();
-    this.createMaterial();
+    this.createSimMaterial();
     this.initFBO();
     this.initRenderTargets();
 
@@ -30,7 +30,7 @@ export default class FBO {
         // p
         console.log('resetting!');
         this.feedPositionsIntoDataTexture();
-        this.createMaterial();
+        this.createSimMaterial();
         this.initFBO();
         this.initRenderTargets();
         this.fboMesh.material.uniforms.posTex.value = this.dataTex;
@@ -51,12 +51,12 @@ export default class FBO {
 
   render(time) {
     // at the start of the render block, A is one frame behind B
-    const oldA = this.renderTargetA; // store A, the penultimate state
-    this.renderTargetA = this.renderTargetB; // advance A to the updated state
-    this.renderTargetB = oldA; // set B to the penultimate state
+    // const oldA = this.renderTargetA; // store A, the penultimate state
+    // this.renderTargetA = this.renderTargetB; // advance A to the updated state
+    // this.renderTargetB = oldA; // set B to the penultimate state
 
     // pass the updated positional values to the simulation
-    this.simMaterial.uniforms.posTex.value = this.renderTargetA.texture;
+    // this.simMaterial.uniforms.posTex.value = this.renderTargetA.texture;
     this.simMaterial.uniforms.uTime.value = this.time;
 
     // run a frame and store the new positional values in renderTargetB
@@ -127,8 +127,6 @@ export default class FBO {
     this.renderTargetB = this.renderTargetA.clone();
 
     // render the positions to the render targets
-    // this.renderer.render(this.scene, this.camera, this.renderTargetA, false);
-    // this.renderer.render(this.scene, this.camera, this.renderTargetB, false);
     this.renderer.setRenderTarget(this.renderTargetA);
     this.renderer.render(this.scene, this.camera);
     this.renderer.setRenderTarget(this.renderTargetB);
@@ -154,7 +152,7 @@ export default class FBO {
     this.scene.add(this.fboMesh);
   }
 
-  createMaterial() {
+  createSimMaterial() {
     this.simMaterial = new THREE.RawShaderMaterial({
       uniforms: {
         posTex: {
@@ -171,21 +169,6 @@ export default class FBO {
     });
   }
 
-  setInitialPositions() {
-    this.w = 512;
-    this.h = 512;
-    let i = 0;
-    this.data = new Float32Array(this.w * this.h * 3);
-
-    for (let x = 0; x < this.w; x++) {
-      for (let y = 0; y < this.h; y++) {
-        this.data[i++] = x / this.w;
-        this.data[i++] = y / this.h;
-        this.data[i++] = 0;
-      }
-    }
-  }
-
   feedPositionsIntoDataTexture() {
     this.dataTex = new THREE.DataTexture(
       this.data,
@@ -197,5 +180,20 @@ export default class FBO {
     this.dataTex.minFilter = THREE.NearestFilter;
     this.dataTex.magFilter = THREE.NearestFilter;
     this.dataTex.needsUpdate = true;
+  }
+
+  setInitialPositions() {
+    this.w = 512;
+    this.h = 512;
+    let i = 0;
+    this.data = new Float32Array(this.w * this.h * 3);
+
+    for (let x = 0; x < this.w; x++) {
+      for (let y = 0; y < this.h; y++) {
+        this.data[i++] = (x / this.w) * 2.0;
+        this.data[i++] = y / this.h;
+        this.data[i++] = 0;
+      }
+    }
   }
 }
