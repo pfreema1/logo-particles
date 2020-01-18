@@ -99,7 +99,7 @@ export default class WebGLView {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
     // const bloomPass = new BloomPass(
-    //   1, // strength
+    //   10, // strength
     //   25, // kernel size
     //   4, // sigma ?
     //   256 // blur render target resolution
@@ -107,7 +107,7 @@ export default class WebGLView {
     // this.composer.addPass(bloomPass);
 
     // const filmPass = new FilmPass(
-    //   0.35, // noise intensity
+    //   0.5, // noise intensity
     //   0.025, // scanline intensity
     //   648, // scanline count
     //   false // grayscale
