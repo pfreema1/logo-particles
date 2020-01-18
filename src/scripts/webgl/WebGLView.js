@@ -32,9 +32,9 @@ export default class WebGLView {
     this.initLights();
     this.initTweakPane();
     // await this.loadTestMesh();
-    this.setupTextCanvas();
+    // this.setupTextCanvas();
     this.initMouseMoveListen();
-    this.initMouseCanvas();
+    // this.initMouseCanvas();
     this.initRenderTri();
     this.initFBO();
     this.initPostProcessing();
@@ -126,10 +126,10 @@ export default class WebGLView {
     this.height = window.innerHeight;
 
     window.addEventListener('mousemove', ({ clientX, clientY }) => {
-      this.mouse.x = clientX; //(clientX / this.width) * 2 - 1;
-      this.mouse.y = clientY; //-(clientY / this.height) * 2 + 1;
+      this.mouse.x = (clientX / this.width) * 2 - 1;
+      this.mouse.y = -(clientY / this.height) * 2 + 1;
 
-      this.mouseCanvas.addTouch(this.mouse);
+      // this.mouseCanvas.addTouch(this.mouse);
     });
   }
 

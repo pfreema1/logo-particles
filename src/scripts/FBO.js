@@ -11,6 +11,12 @@ export default class FBO {
     this.bgScene = bgScene;
     this.time = null;
 
+    this.init();
+  }
+
+  async init() {
+    await this.loadImageTexture();
+
     this.setInitialPositions();
     this.feedPositionsIntoDataTexture();
     this.createSimMaterial();
@@ -22,6 +28,17 @@ export default class FBO {
     this.setupParticlesMesh();
 
     this.setupKeyboardControls();
+  }
+
+  loadImageTexture() {
+    return new Promise((res, rej) => {
+      var loader = new THREE.TextureLoader();
+
+      loader.load('./logo-final-final.png', texture => {
+        this.logoTexture = texture;
+        res();
+      });
+    });
   }
 
   setupKeyboardControls() {
@@ -55,6 +72,9 @@ export default class FBO {
     // this.renderTargetA = this.renderTargetB; // advance A to the updated state
     // this.renderTargetB = oldA; // set B to the penultimate state
 
+    if (!this.simMaterial) {
+      return;
+    }
     // pass the updated positional values to the simulation
     // this.simMaterial.uniforms.posTex.value = this.renderTargetA.texture;
     this.simMaterial.uniforms.uTime.value = this.time;
@@ -162,6 +182,10 @@ export default class FBO {
         uTime: {
           type: 'f',
           value: null
+        },
+        logoTex: {
+          type: 't',
+          value: this.logoTexture
         }
       },
       vertexShader: glslify(simulationVert),

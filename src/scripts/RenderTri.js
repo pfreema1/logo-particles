@@ -34,14 +34,14 @@ export default class RenderTri {
           type: 't',
           value: this.bgRenderTarget.texture
         },
-        uMouseCanvas: {
-          type: 't',
-          value: this.mouseCanvas.texture
-        },
-        uTextCanvas: {
-          type: 't',
-          value: this.textCanvas.texture
-        },
+        // uMouseCanvas: {
+        //   type: 't',
+        //   value: this.mouseCanvas.texture
+        // },
+        // uTextCanvas: {
+        //   type: 't',
+        //   value: this.textCanvas.texture
+        // },
         uResolution: { value: resolution },
         uTime: {
           value: 0.0

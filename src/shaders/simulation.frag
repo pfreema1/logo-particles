@@ -1,6 +1,7 @@
 precision mediump float;
 
 uniform sampler2D posTex;
+uniform sampler2D logoTex;
 uniform float uTime;
 
 varying vec2 vUv;
@@ -52,8 +53,12 @@ void main() {
 
     // read the supplied x,y,z vert positions
     vec3 pos = texture2D(posTex, vUv).xyz;
+    vec3 logoCol = texture2D(logoTex, vUv).rgb;
 
-    pos.z = fbm(vec2(vUv.x, vUv.y + uTime * 0.1) * 8.0) * 0.3;
+    float fbmVal = fbm(vec2(vUv.x, vUv.y + uTime * 0.1) * 8.0) * 0.3;
+
+
+    pos.z = fbmVal - logoCol.r;
 
     // vec3 tar = pos + curl( pos.x * frequency, pos.y * frequency, pos.z * frequency ) * amplitude;
 
