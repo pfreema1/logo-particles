@@ -172,6 +172,7 @@ export default class FBO {
   }
 
   setInitialPositions() {
+    // yeth
     this.w = 512;
     this.h = 512;
     let i = 0;
